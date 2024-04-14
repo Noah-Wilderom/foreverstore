@@ -1,4 +1,4 @@
-module github.com/NoahWilderom/foreverstore
+module github.com/Noah-Wilderom/foreverstore
 
 go 1.22.1
 

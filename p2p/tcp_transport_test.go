@@ -11,10 +11,9 @@ func TestTCPTransport(t *testing.T) {
 		HandShakeFunc: NOPHandshakeFunc,
 		Decoder:       DefaultDecoder{},
 	}
+
 	tr := NewTCPTransport(opts)
 	assert.Equal(t, tr.ListenAddr, opts.ListenAddr)
 
 	assert.Nil(t, tr.ListenAndAccept())
-
-	select {}
 }
