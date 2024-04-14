@@ -2,6 +2,7 @@ package p2p
 
 import (
 	"fmt"
+	"log"
 	"net"
 )
 
@@ -67,6 +68,7 @@ func (t *TCPTransport) ListenAndAccept() error {
 }
 
 func (t *TCPTransport) startAcceptLoop() {
+	log.Printf("Server started at [%s]\n", t.ListenAddr)
 	for {
 		conn, err := t.listener.Accept()
 		if err != nil {
@@ -82,7 +84,7 @@ func (t *TCPTransport) startAcceptLoop() {
 func (t *TCPTransport) handleConn(conn net.Conn) {
 	var err error
 	defer func() {
-		fmt.Printf("dropping peer connection: %s", err)
+		fmt.Printf("dropping peer connection: %s\n", err)
 		conn.Close()
 	}()
 
@@ -102,7 +104,8 @@ func (t *TCPTransport) handleConn(conn net.Conn) {
 	// Read loop
 	rpc := RPC{}
 	for {
-		if err := t.Decoder.Decode(conn, &rpc); err != nil {
+		err = t.Decoder.Decode(conn, &rpc)
+		if err != nil {
 			fmt.Printf("TCP read error: %s\n", err)
 			return
 		}

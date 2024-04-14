@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"io"
-	"os"
 	"testing"
 )
 
@@ -48,10 +47,18 @@ func TestStore(t *testing.T) {
 	s := NewStore(opts)
 	key := "testing-key"
 
-	defer s.Delete(key)
 	data := []byte("some jpg bytes")
+
+	defer func() {
+		_ = s.Delete(key)
+	}()
+
 	if err := s.writeStream(key, bytes.NewReader(data)); err != nil {
 		t.Error(err)
+	}
+
+	if ok := s.Has(key); !ok {
+		t.Errorf("expected to have key %s", key)
 	}
 
 	r, err := s.Read(key)

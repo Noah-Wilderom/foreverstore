@@ -2,8 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/Noah-Wilderom/foreverstore/p2p"
 	"log"
+	"os"
+
+	"github.com/Noah-Wilderom/foreverstore/p2p"
+
+	"github.com/joho/godotenv"
 )
 
 func OnPeer(peer p2p.Peer) error {
@@ -12,8 +16,13 @@ func OnPeer(peer p2p.Peer) error {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	tcpOpts := p2p.TCPTransportOpts{
-		ListenAddr:    ":3000",
+		ListenAddr:    fmt.Sprintf(":%s", os.Getenv("APP_PORT")),
 		HandShakeFunc: p2p.NOPHandshakeFunc,
 		Decoder:       p2p.DefaultDecoder{},
 		OnPeer:        OnPeer,
